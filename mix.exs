@@ -48,8 +48,13 @@ defmodule MixDependencySubmission.MixProject do
         steps: [:assemble, &Burrito.wrap/1],
         burrito: [
           targets: [
-            linux_amd64: [os: :linux, cpu: :x86_64],
-            linux_arm64: [os: :linux, cpu: :aarch64]
+            Linux_X64: [os: :linux, cpu: :x86_64],
+            Linux_ARM64: [os: :linux, cpu: :aarch64],
+            macOS_X64: [os: :darwin, cpu: :x86_64],
+            macOS_ARM64: [os: :darwin, cpu: :aarch64],
+            Windows_X64: [os: :windows, cpu: :x86_64]
+            # Not currently supported by Burrito
+            # Windows_ARM64: [os: :windows, cpu: :aarch64]
           ]
         ]
       ]

@@ -65,6 +65,22 @@ jobs:
 
 None.
 
+## OS and Architecture Support
+
+This action supports the following operating systems and architectures, tested using the corresponding
+[GitHub-hosted runners](https://docs.github.com/en/actions/using-github-hosted-runners/using-github-hosted-runners/about-github-hosted-runners#supported-runners-and-hardware-resources):
+
+| Operating System | Architecture | Supported | Tested Runner         |
+|------------------|--------------|-----------|------------------------|
+| Linux            | x64          | ✅        | `ubuntu-24.04`         |
+| Linux            | ARM64        | ✅        | `ubuntu-24.04-arm`     |
+| macOS            | x64          | ✅        | `macos-13`             |
+| macOS            | ARM64        | ✅        | `macos-15`             |
+| Windows          | x64          | ✅        | `windows-2025`         |
+| Windows          | ARM64        | ❌        | *(not supported)*      |
+
+> ❌ **Not supported**: Windows on ARM64 (due to missing support in
+[burrito](https://github.com/burrito-elixir/burrito)).
 
 ## License
 

@@ -1,19 +1,31 @@
 on:
   workflow_call: {}
 
-name: "Build"
+name: "Test Binary"
 
 permissions:
   contents: read
 
 jobs:
   binary:
-    name: "Binary"
-
-    runs-on: ubuntu-latest
 
     permissions:
       contents: write
+
+    strategy:
+      matrix:
+        runner:
+          - ubuntu-24.04 # X64
+          - ubuntu-24.04-arm # ARM64
+          - macos-13 # ARM64
+          - macos-15 # X64
+          - windows-2025 # X64
+          # Not currently supported by Burrito
+          # - windows-11-arm # ARM64
+
+    runs-on: "${{ matrix.runner }}"
+
+    name: "Submit Dependencies (${{ matrix.runner }})"
 
     steps:
       - name: Harden Runner
@@ -27,11 +39,13 @@ jobs:
           name: binary
           path: .
 
-      - run: chmod +x ./mix_dependency_submission_linux_amd64
+      - run: >-
+          chmod +x
+          ./mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}
 
-      - run: |
-          ./mix_dependency_submission_linux_amd64 \
-            --install-deps \
-            --ignore test/fixtures
+      - run: >-
+          ./mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}
+          --install-deps
+          --ignore test/fixtures
         env:
           GITHUB_TOKEN: ${{ github.token }}

@@ -51,7 +51,7 @@ jobs:
           subject-path: 'burrito_out/mix_dependency_submission_*'
       - name: "Copy provenance"
         if: "${{ inputs.attest }}"
-        run: |
+        run: |-
           for FILE in burrito_out/mix_dependency_submission_*; do
             cp "$ATTESTATION" $FILE.sigstore
           done

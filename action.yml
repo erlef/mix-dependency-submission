@@ -28,30 +28,31 @@ runs:
       with:
         repository: "erlef/mix-dependency-submission"
         tag: "v1.0.0-beta.8"
-        fileName: "mix_dependency_submission_linux_amd64"
+        fileName: "mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}"
         out-file-path: "${{ runner.temp }}"
     - name: "Verify Dependency Submission Tool Provenance"
-      run: |
-        gh attestation \
-          verify \
-          --repo erlef/mix-dependency-submission \
-          --source-ref refs/tags/v1.0.0-beta.8 \
-          "${{ runner.temp }}/mix_dependency_submission_linux_amd64"
+      run: >-
+        gh attestation verify
+        --repo erlef/mix-dependency-submission
+        --source-ref refs/tags/v1.0.0-beta.8
+        "${{ runner.temp }}/mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}"
       shell: "bash"
       working-directory: "${{ runner.temp }}"
       env:
         GITHUB_TOKEN: ${{ github.token }}
     - name: "Make Tool Executable"
-      run: "chmod +x mix_dependency_submission_linux_amd64"
+      run: >-
+        chmod +x
+        mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}
       shell: "bash"
       working-directory: "${{ runner.temp }}"
     - name: "Submit Dependencies"
-      run: |
-        ${{ runner.temp }}/mix_dependency_submission_linux_amd64 \
-          --project-path="$PROJECT_PATH" \
-          --github-token="$GITHUB_TOKEN" \
-          ${{ inputs.install-deps == 'true' && '--install-deps' || '' }} \
-          ${{ inputs.ignore && '--ignore="$IGNORE"' || '' }}
+      run: >-
+        ${{ runner.temp }}/mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}
+        --project-path="$PROJECT_PATH"
+        --github-token="$GITHUB_TOKEN"
+        ${{ inputs.install-deps == 'true' && '--install-deps' || '' }}
+        ${{ inputs.ignore && '--ignore="$IGNORE"' || '' }}
       shell: "bash"
       env:
         GITHUB_TOKEN: "${{ inputs.token }}"
