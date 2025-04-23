@@ -5,7 +5,7 @@ defmodule MixDependencySubmission.Submission.JobTest do
 
   doctest Job
 
-  describe "Jason.Encoder" do
+  describe "JSON.Encoder" do
     test "encodes filled struct" do
       job = %Job{
         id: "test",
@@ -14,7 +14,7 @@ defmodule MixDependencySubmission.Submission.JobTest do
       }
 
       assert %{"correlator" => "test", "html_url" => "http://example.com", "id" => "test"} =
-               job |> Jason.encode!() |> Jason.decode!()
+               job |> JSON.encode!() |> JSON.decode!()
     end
 
     test "encodes partial struct" do
@@ -24,7 +24,7 @@ defmodule MixDependencySubmission.Submission.JobTest do
       }
 
       assert %{"correlator" => "test", "id" => "test"} =
-               job |> Jason.encode!() |> Jason.decode!()
+               job |> JSON.encode!() |> JSON.decode!()
     end
   end
 end

@@ -14,14 +14,14 @@ defmodule MixDependencySubmission.Submission.Detector do
   @enforce_keys [:name, :version, :url]
   defstruct [:name, :version, :url]
 
-  defimpl Jason.Encoder do
-    @impl Jason.Encoder
-    def encode(value, opts) do
+  defimpl JSON.Encoder do
+    @impl JSON.Encoder
+    def encode(value, encoder) do
       value
       |> Map.from_struct()
       |> Map.update!(:version, &Version.to_string/1)
       |> Map.update!(:url, &URI.to_string/1)
-      |> Jason.Encode.map(opts)
+      |> encoder.(encoder)
     end
   end
 end

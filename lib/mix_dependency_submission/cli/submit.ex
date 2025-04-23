@@ -78,7 +78,7 @@ defmodule MixDependencySubmission.CLI.Submit do
         ignore: ignore
       )
 
-    Logger.info("Calculated Submission: #{Jason.encode!(submission, pretty: true)}")
+    Logger.info("Calculated Submission: #{JSON.encode!(submission, pretty: true)}")
 
     submission
     |> ApiClient.submit(github_api_url, github_repository, github_token)

@@ -22,9 +22,9 @@ defmodule MixDependencySubmission.Submission.Manifest.Dependency do
   @enforce_keys []
   defstruct package_url: nil, metadata: nil, relationship: nil, scope: nil, dependencies: nil
 
-  defimpl Jason.Encoder do
-    @impl Jason.Encoder
-    def encode(value, opts) do
+  defimpl JSON.Encoder do
+    @impl JSON.Encoder
+    def encode(value, encoder) do
       value
       |> Map.from_struct()
       |> update_in([:package_url], &purl_to_string/1)
@@ -32,7 +32,7 @@ defmodule MixDependencySubmission.Submission.Manifest.Dependency do
       |> update_in([:dependencies, Access.all()], &purl_to_string/1)
       |> Enum.reject(fn {_key, value} -> value in [nil, []] end)
       |> Map.new()
-      |> Jason.Encode.map(opts)
+      |> encoder.(encoder)
     end
 
     @spec purl_to_string(purl :: Purl.t()) :: String.t()

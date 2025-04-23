@@ -18,14 +18,14 @@ defmodule MixDependencySubmission.Submission.Manifest do
   @enforce_keys [:name]
   defstruct [:name, file: nil, metadata: nil, resolved: nil]
 
-  defimpl Jason.Encoder do
-    @impl Jason.Encoder
-    def encode(value, opts) do
+  defimpl JSON.Encoder do
+    @impl JSON.Encoder
+    def encode(value, encoder) do
       value
       |> Map.from_struct()
       |> Enum.reject(&match?({_key, nil}, &1))
       |> Map.new()
-      |> Jason.Encode.map(opts)
+      |> encoder.(encoder)
     end
   end
 end

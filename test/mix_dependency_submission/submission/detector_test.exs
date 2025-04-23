@@ -5,7 +5,7 @@ defmodule MixDependencySubmission.Submission.DetectorTest do
 
   doctest Detector
 
-  describe "Jason.Encoder" do
+  describe "JSON.Encoder" do
     test "encodes filled struct" do
       detector = %Detector{
         name: "test",
@@ -14,7 +14,7 @@ defmodule MixDependencySubmission.Submission.DetectorTest do
       }
 
       assert %{"name" => "test", "url" => "http://example.com", "version" => "1.0.0"} =
-               detector |> Jason.encode!() |> Jason.decode!()
+               detector |> JSON.encode!() |> JSON.decode!()
     end
   end
 end
