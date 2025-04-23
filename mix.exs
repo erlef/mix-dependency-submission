@@ -87,7 +87,6 @@ defmodule MixDependencySubmission.MixProject do
       {:ex_doc, ">= 0.0.0", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.5", only: [:test], runtime: false},
       {:hex, github: "hexpm/hex", tag: "v2.3.1", runtime: false},
-      {:jason, "~> 1.4"},
       {:optimus, "~> 0.2"},
       {:plug, "~> 1.0", only: [:test]},
       {:purl, "~> 0.3.0"},

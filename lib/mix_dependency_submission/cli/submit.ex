@@ -81,7 +81,7 @@ defmodule MixDependencySubmission.CLI.Submit do
         ignore: ignore
       )
 
-    submission_json = Jason.encode!(submission, pretty: true)
+    submission_json = JSON.encode!(submission)
 
     submission_path =
       Path.join(System.tmp_dir!(), "submission-#{:erlang.crc32(submission_json)}.json")

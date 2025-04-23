@@ -21,7 +21,7 @@ defmodule MixDependencySubmission.Submission do
           manifests: manifests() | nil
         }
 
-  @derive Jason.Encoder
+  @derive JSON.Encoder
   @enforce_keys [:version, :job, :sha, :ref, :detector, :scanned]
   defstruct [:version, :job, :sha, :ref, :detector, :scanned, metadata: nil, manifests: nil]
 
