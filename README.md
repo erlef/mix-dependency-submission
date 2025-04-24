@@ -1,5 +1,6 @@
 # GitHub Dependency Submission Action for Mix
 
+[![EEF Security WG project](https://img.shields.io/badge/EEF-Security-black)](https://github.com/erlef/security-wg)
 [![.github/workflows/branch_main.yml](https://github.com/erlef/mix-dependency-submission/actions/workflows/branch_main.yml/badge.svg)](https://github.com/erlef/mix-dependency-submission/actions/workflows/branch_main.yml)
 [![Coverage Status](https://coveralls.io/repos/github/erlef/mix-dependency-submission/badge.svg?branch=main)](https://coveralls.io/github/erlef/mix-dependency-submission?branch=main)
 [![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/erlef/mix-dependency-submission/badge)](https://scorecard.dev/viewer/?uri=github.com/erlef/mix-dependency-submission)
