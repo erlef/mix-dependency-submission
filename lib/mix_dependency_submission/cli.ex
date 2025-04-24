@@ -119,8 +119,7 @@ defmodule MixDependencySubmission.CLI do
 
   @spec parse_project_path(path :: String.t()) :: Optimus.parser_result()
   defp parse_project_path(path) do
-    with {:ok, path} <- parse_directory(path),
-         true <- path |> Path.join("mix.exs") |> File.regular?() do
+    with {:ok, path} <- parse_directory(path) do
       {:ok, Path.absname(path)}
     else
       {:error, reason} -> {:error, reason}
