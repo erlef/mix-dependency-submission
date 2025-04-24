@@ -34,12 +34,16 @@ This action is intended to be used within a GitHub Actions workflow.
 ### Minimal Example
 
 ```yaml
+name: "Mix Dependency Submission"
+
 on:
   push:
     branches:
       - "main"
 
-name: "Dependency Submission"
+# The API requires write permission on the repository to submit dependencies
+permissions:
+  contents: write
 
 jobs:
   report_mix_deps:
