@@ -53,6 +53,16 @@ defmodule MixDependencySubmission.Fetcher.MixFile do
 
   defp normalize_dep({app, requirement, opts})
        when is_atom(app) and (is_binary(requirement) or is_nil(requirement)) and is_list(opts) do
+    bin_app = Atom.to_string(app)
+
+    dest = Path.join(Mix.Project.deps_path(), bin_app)
+    build = Path.join([Mix.Project.build_path(), "lib", bin_app])
+
+    opts =
+      opts
+      |> Keyword.put(:dest, dest)
+      |> Keyword.put(:build, build)
+
     {scm, opts} =
       Enum.find_value(Mix.SCM.available(), {nil, opts}, fn scm ->
         case scm.accepts_options(app, opts) do

@@ -1,6 +1,7 @@
 defmodule MixDependencySubmission.Fetcher.MixFileTest do
   use MixDependencySubmission.FixtureCase, async: false
 
+  alias Mix.SCM.Git
   alias MixDependencySubmission.Fetcher.MixFile
   alias MixDependencySubmission.Util
 
@@ -14,20 +15,45 @@ defmodule MixDependencySubmission.Fetcher.MixFileTest do
         assert %{
                  credo: %{
                    scm: Hex.SCM,
-                   mix_dep: {:credo, "~> 1.7", [hex: "credo", repo: "hexpm"]},
+                   mix_dep: {:credo, "~> 1.7", [hex: "credo", build: _credo_build, dest: _credo_dest, repo: "hexpm"]},
                    scope: :runtime,
                    relationship: :direct
                  },
                  expo: %{
-                   scm: Mix.SCM.Git,
-                   mix_dep: {:expo, nil, [git: "https://github.com/elixir-gettext/expo.git", checkout: nil]},
+                   scm: Git,
+                   mix_dep:
+                     {:expo, nil,
+                      [
+                        git: "https://github.com/elixir-gettext/expo.git",
+                        checkout: _expo_checkout,
+                        build: _expo_build,
+                        dest: _expo_dest
+                      ]},
                    scope: :runtime,
                    relationship: :direct
                  },
                  mime: %{
                    scm: Hex.SCM,
-                   mix_dep: {:mime, "~> 2.0", [hex: "mime", repo: "hexpm"]},
+                   mix_dep: {:mime, "~> 2.0", [hex: "mime", build: _mime_build, dest: _mime_dest, repo: "hexpm"]},
                    scope: :runtime,
+                   relationship: :direct
+                 },
+                 heroicons: %{
+                   scope: :runtime,
+                   scm: Git,
+                   mix_dep:
+                     {:heroicons, nil,
+                      [
+                        git: "https://github.com/tailwindlabs/heroicons.git",
+                        dest: _heroicons_dest,
+                        checkout: _heroicons_checkout,
+                        build: _heroicons_build,
+                        tag: "v2.1.5",
+                        sparse: "optimized",
+                        app: false,
+                        compile: false,
+                        depth: 1
+                      ]},
                    relationship: :direct
                  }
                } = MixFile.fetch()
@@ -40,7 +66,7 @@ defmodule MixDependencySubmission.Fetcher.MixFileTest do
       Util.in_project(app_path, fn _mix_module ->
         assert %{
                  credo: %{
-                   mix_dep: {:credo, "~> 1.7", [hex: "credo", repo: "hexpm"]},
+                   mix_dep: {:credo, "~> 1.7", [hex: "credo", build: _credo_build, dest: _credo_dest, repo: "hexpm"]},
                    relationship: :direct,
                    scm: Hex.SCM,
                    scope: :runtime
@@ -48,7 +74,7 @@ defmodule MixDependencySubmission.Fetcher.MixFileTest do
                  path_dep: %{
                    scope: :runtime,
                    scm: Mix.SCM.Path,
-                   mix_dep: {:path_dep, nil, [dest: "/tmp", path: "/tmp"]},
+                   mix_dep: {:path_dep, nil, [dest: "/tmp", build: _path_dep_build, path: "/tmp"]},
                    relationship: :direct
                  }
                } = MixFile.fetch()

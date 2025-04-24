@@ -8,7 +8,9 @@ defmodule AppNameToReplace.MixProject do
       deps: [
         {:credo, "~> 1.7"},
         {:mime, "~> 2.0"},
-        {:expo, github: "elixir-gettext/expo"}
+        {:expo, github: "elixir-gettext/expo"},
+        {:heroicons,
+         github: "tailwindlabs/heroicons", tag: "v2.1.5", sparse: "optimized", app: false, compile: false, depth: 1}
       ]
     ]
   end
