@@ -45,7 +45,7 @@ defmodule MixDependencySubmission.CLI do
           short: "-p",
           long: "--project-path",
           help: "Path to the project. (`directory` with `mix.exs`)",
-          parser: &parse_project_path/1,
+          parser: &parse_directory/1,
           default: &File.cwd!/0
         ],
         paths_relative_to: [
@@ -115,17 +115,6 @@ defmodule MixDependencySubmission.CLI do
         ]
       ]
     ]
-  end
-
-  @spec parse_project_path(path :: String.t()) :: Optimus.parser_result()
-  defp parse_project_path(path) do
-    with {:ok, path} <- parse_directory(path),
-         true <- path |> Path.join("mix.exs") |> File.regular?() do
-      {:ok, Path.absname(path)}
-    else
-      {:error, reason} -> {:error, reason}
-      false -> {:error, "invalid path"}
-    end
   end
 
   @spec parse_directory(path :: String.t()) :: Optimus.parser_result()
