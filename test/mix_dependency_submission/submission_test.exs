@@ -5,7 +5,7 @@ defmodule MixDependencySubmission.SubmissionTest do
 
   doctest Submission
 
-  describe "Jason.Encoder" do
+  describe "JSON.Encoder" do
     test "encodes filled struct" do
       datetime = DateTime.utc_now()
 
@@ -40,7 +40,7 @@ defmodule MixDependencySubmission.SubmissionTest do
                "sha" => "sha",
                "version" => 0
              } =
-               submission |> Jason.encode!() |> Jason.decode!()
+               submission |> JSON.encode!() |> JSON.decode!()
     end
   end
 end
