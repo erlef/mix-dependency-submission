@@ -37,14 +37,14 @@ runs:
       uses: robinraju/release-downloader@daf26c55d821e836577a15f77d86ddc078948b05 # v1.12
       with:
         repository: "erlef/mix-dependency-submission"
-        tag: "v1.0.2"
+        tag: "v1.1.0"
         fileName: "mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}"
         out-file-path: "${{ runner.temp }}"
     - name: "Verify Dependency Submission Tool Provenance"
       run: >-
         gh attestation verify
         --repo erlef/mix-dependency-submission
-        --source-ref refs/tags/v1.0.2
+        --source-ref refs/tags/v1.1.0
         "${{ runner.temp }}/mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}"
       shell: "bash"
       working-directory: "${{ runner.temp }}"
