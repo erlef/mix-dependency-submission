@@ -5,6 +5,8 @@ defmodule MixDependencySubmission.CLI do
   Used to configure and validate inputs for submitting a dependency snapshot.
   """
 
+  alias MixDependencySubmission.GitHub
+
   @app Mix.Project.config()[:app]
   @description Mix.Project.config()[:description]
   @version Mix.Project.config()[:version]
@@ -25,10 +27,20 @@ defmodule MixDependencySubmission.CLI do
 
   """
   @spec parse!([String.t()]) :: Optimus.ParseResult.t()
-  def parse!(argv) do
-    cli_definition()
-    |> Optimus.new!()
-    |> Optimus.parse!(argv)
+  case Mix.env() do
+    :test ->
+      def parse!(argv) do
+        cli_definition()
+        |> Optimus.new!()
+        |> Optimus.parse!(argv, &raise("Exit: #{&1}"))
+      end
+
+    _other ->
+      def parse!(argv) do
+        cli_definition()
+        |> Optimus.new!()
+        |> Optimus.parse!(argv)
+      end
   end
 
   @spec cli_definition :: Optimus.spec()
@@ -59,41 +71,41 @@ defmodule MixDependencySubmission.CLI do
           value_name: "GITHUB_API_URL",
           long: "--github-api-url",
           help: "GitHub API URL",
-          parser: &parse_github_api_url/1,
-          default: System.get_env("GITHUB_API_URL", "https://api.github.com")
+          parser: &parse_uri/1,
+          default: GitHub.get_api_url()
         ],
         github_repository:
-          optimus_options_with_env_default("GITHUB_REPOSITORY",
+          optimus_options_with_fun_default(&GitHub.fetch_repository/0,
             value_name: "GITHUB_REPOSITORY",
             long: "--github-repository",
             help: ~S(GitHub repository name "owner/repository")
           ),
         github_job_id:
-          optimus_options_with_env_default("GITHUB_JOB",
+          optimus_options_with_fun_default(&GitHub.fetch_job_id/0,
             value_name: "GITHUB_JOB",
             long: "--github-job-id",
             help: "GitHub Actions Job ID"
           ),
         github_workflow:
-          optimus_options_with_env_default("GITHUB_WORKFLOW",
+          optimus_options_with_fun_default(&GitHub.fetch_workflow/0,
             value_name: "GITHUB_WORKFLOW",
             long: "--github-workflow",
             help: "GitHub Actions Workflow Name"
           ),
         sha:
-          sha_option(
+          optimus_options_with_fun_default(&GitHub.fetch_head_sha/0,
             value_name: "SHA",
             long: "--sha",
             help: "Current Git SHA"
           ),
         ref:
-          optimus_options_with_env_default("GITHUB_REF",
+          optimus_options_with_fun_default(&GitHub.fetch_ref/0,
             value_name: "REF",
             long: "--ref",
             help: "Current Git Ref"
           ),
         github_token:
-          optimus_options_with_env_default("GITHUB_TOKEN",
+          optimus_options_with_fun_default(&GitHub.fetch_token/0,
             value_name: "GITHUB_TOKEN",
             long: "--github-token",
             help: "GitHub Token"
@@ -126,55 +138,22 @@ defmodule MixDependencySubmission.CLI do
     end
   end
 
-  @spec parse_github_api_url(uri :: String.t()) :: Optimus.parser_result()
-  defp parse_github_api_url(uri) do
+  @spec parse_uri(uri :: String.t()) :: Optimus.parser_result()
+  defp parse_uri(uri) do
     with {:ok, %URI{}} <- URI.new(uri) do
-      uri
+      {:ok, uri}
     end
   end
 
-  @spec optimus_options_with_env_default(env :: String.t(), details :: Keyword.t()) :: Keyword.t()
-  defp optimus_options_with_env_default(env, details) do
-    case System.fetch_env(env) do
+  @spec optimus_options_with_fun_default(
+          fetch_fun :: (-> {:ok, value} | :error),
+          details :: Keyword.t()
+        ) :: Keyword.t()
+        when value: term()
+  defp optimus_options_with_fun_default(fetch_fun, details) when is_function(fetch_fun, 0) do
+    case fetch_fun.() do
       {:ok, value} -> [default: value]
       :error -> [required: true]
     end ++ details
-  end
-
-  @spec sha_option(Keyword.t()) :: Keyword.t()
-  defp sha_option(base_opts) do
-    # If the GitHub event is a pull request, we need to use the head SHA of the PR
-    # instead of the commit SHA of the workflow run.
-    # This is because the workflow run is triggered by the base commit of the PR,
-    # and we want to report the dependencies of the head commit.
-    # See: https://github.com/github/dependency-submission-toolkit/blob/72f5e31325b5e1bcc91f1b12eb7abe68e75b2105/src/snapshot.ts#L36-L61
-    case load_pr_head_sha() do
-      {:ok, sha} ->
-        Keyword.put(base_opts, :default, sha)
-
-      :error ->
-        # If we can't load the PR head SHA, we fall back to the default behavior
-        # of using the GITHUB_SHA environment variable.
-        optimus_options_with_env_default("GITHUB_SHA", base_opts)
-    end
-  end
-
-  # Note that pull_request_target is omitted here.
-  # That event runs in the context of the base commit of the PR,
-  # so the snapshot should not be associated with the head commit.
-
-  @pr_events ~w[pull_request pull_request_comment pull_request_review pull_request_review_comment]
-
-  @spec load_pr_head_sha :: {:ok, <<_::320>>} | :error
-  defp load_pr_head_sha do
-    with {:ok, event} when event in @pr_events <- System.fetch_env("GITHUB_EVENT_NAME"),
-         {:ok, event_path} <- System.fetch_env("GITHUB_EVENT_PATH") do
-      event_details_json = File.read!(event_path)
-
-      %{"pull_request" => %{"head" => %{"sha" => <<_binary::320>> = sha}}} =
-        JSON.decode!(event_details_json)
-
-      {:ok, sha}
-    end
   end
 end

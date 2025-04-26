@@ -42,9 +42,63 @@ jobs:
           chmod +x
           ./mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}
 
-      - run: >-
+      - id: submit
+        run: >-
           ./mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}
           --install-deps
           --ignore test/fixtures
         env:
           GITHUB_TOKEN: ${{ github.token }}
+
+      - name: "Validate Output submission-json-path not empty"
+        uses: nick-fields/assert-action@aa0067e01f0f6545c31755d6ca128c5a3a14f6bf # v2.0.0
+        with:
+          expected: ""
+          actual: "${{ steps.submit.outputs.submission-json-path }}"
+          comparison: "notEqual"
+
+      - name: "Validate Output submission-json-path file contents valid JSON"
+        uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+        with:
+          script: |
+            const fs = require('fs');
+            const path = require('path');
+            const filePath = process.env.SUBMISSION_JSON_PATH;
+            const fileContents = fs.readFileSync(filePath, 'utf8');
+            try {
+              JSON.parse(fileContents);
+              return true;
+            } catch (error) {
+              throw new Error(`Invalid JSON in file: ${filePath}`);
+            }
+        env:
+          SUBMISSION_JSON_PATH: "${{ steps.submit.outputs.submission-json-path }}"
+
+      - name: "Validate output snapshot-id not empty"
+        uses: nick-fields/assert-action@aa0067e01f0f6545c31755d6ca128c5a3a14f6bf # v2.0.0
+        with:
+          expected: ""
+          actual: "${{ steps.submit.outputs.snapshot-id }}"
+          comparison: "notEqual"
+
+      - name: "Validate output snapshot-api-url is correct"
+        uses: nick-fields/assert-action@aa0067e01f0f6545c31755d6ca128c5a3a14f6bf # v2.0.0
+        with:
+          expected: "${{ github.api_url }}/repos/${{ github.repository }}/dependency-graph/snapshots/${{ steps.submit.outputs.snapshot-id }}"
+          actual: "${{ steps.submit.outputs.snapshot-api-url }}"
+          comparison: "exact"
+
+      - name: "Can call snapshot-api-url"
+        id: snapshot-api-call
+        uses: fjogeleit/http-request-action@23ad54bcd1178fcff6a0d17538fa09de3a7f0a4d #v1.16.4
+        with:
+          url: "${{ steps.submit.outputs.snapshot-api-url }}"
+          method: "GET"
+          bearerToken: "${{ github.token }}"
+
+      - name: "Snapshot API call status code is 200"
+        uses: nick-fields/assert-action@aa0067e01f0f6545c31755d6ca128c5a3a14f6bf # v2.0.0
+        with:
+          expected: "200"
+          actual: "${{ steps.snapshot-api-call.outputs.status }}"
+          comparison: "exact"

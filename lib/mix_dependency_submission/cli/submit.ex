@@ -10,6 +10,7 @@ defmodule MixDependencySubmission.CLI.Submit do
 
   alias MixDependencySubmission.ApiClient
   alias MixDependencySubmission.CLI
+  alias MixDependencySubmission.GitHub
 
   require Logger
 
@@ -44,9 +45,11 @@ defmodule MixDependencySubmission.CLI.Submit do
       ...>   "--github-repository",
       ...>   "org/repo"
       ...> ])
+      # Exit Code
+      0
 
   """
-  @spec run(argv :: [String.t()]) :: no_return()
+  @spec run(argv :: [String.t()]) :: non_neg_integer()
   def run(argv) do
     %Optimus.ParseResult{
       options: %{
@@ -78,20 +81,71 @@ defmodule MixDependencySubmission.CLI.Submit do
         ignore: ignore
       )
 
-    Logger.info("Calculated Submission: #{Jason.encode!(submission, pretty: true)}")
+    submission_json = Jason.encode!(submission, pretty: true)
+
+    submission_path =
+      Path.join(System.tmp_dir!(), "submission-#{:erlang.crc32(submission_json)}.json")
+
+    File.write!(submission_path, submission_json)
+
+    Logger.info("Calculated Submission, written to: #{submission_path}")
+
+    GitHub.write_output("submission-json-path", submission_path)
 
     submission
     |> ApiClient.submit(github_api_url, github_repository, github_token)
     |> case do
-      {:ok, %Req.Response{body: body}} ->
-        Logger.info("Successfully submitted submission")
-        Logger.debug("Success Response: #{inspect(body, pretty: true)}")
-
-        System.halt(0)
+      {:ok, %Req.Response{body: body, status: 201}} ->
+        report_result(body, github_api_url, github_repository)
 
       {:error, {:unexpected_response, response}} ->
         Logger.error("Unexpected response: #{inspect(response, pretty: true)}")
-        System.stop(1)
+
+        2
     end
+  end
+
+  defp report_result(body, github_api_url, github_repository)
+
+  defp report_result(
+         %{"id" => submission_id, "message" => message, "result" => result} = body,
+         github_api_url,
+         github_repository
+       )
+       when result in ~w[SUCCESS ACCEPTED] do
+    Logger.info("Successfully submitted submission: #{result}: #{message}")
+    Logger.debug("Success Response: #{inspect(body, pretty: true)}")
+
+    GitHub.write_output("snapshot-id", submission_id)
+
+    GitHub.write_output(
+      "snapshot-api-url",
+      github_api_url <> "/repos/#{github_repository}/dependency-graph/snapshots/#{submission_id}"
+    )
+
+    0
+  end
+
+  @spec report_result(
+          body :: %{String.t() => term()},
+          github_api_url :: String.t(),
+          github_repository :: String.t()
+        ) :: non_neg_integer()
+  defp report_result(
+         %{"id" => submission_id, "message" => message, "result" => "INVALID"} = body,
+         github_api_url,
+         github_repository
+       ) do
+    Logger.error("Invalid submission: #{message}")
+    Logger.debug("Invalid Response: #{inspect(body, pretty: true)}")
+
+    GitHub.write_output("snapshot-id", submission_id)
+
+    GitHub.write_output(
+      "snapshot-api-url",
+      github_api_url <> "/repos/#{github_repository}/dependency-graph/snapshots/#{submission_id}"
+    )
+
+    1
   end
 end

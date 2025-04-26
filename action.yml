@@ -20,6 +20,16 @@ inputs:
   ignore:
     required: false
     description: "Paths to ignore"
+outputs:
+  submission-json-path:
+    description: "Path to the generated submission JSON file"
+    value: "${{ steps.submit.outputs.submission-json-path }}"
+  snapshot-id:
+    description: "ID of the submission"
+    value: "${{ steps.submit.outputs.snapshot-id }}"
+  snapshot-api-url:
+    description: "URL of the submission API"
+    value: "${{ steps.submit.outputs.snapshot-api-url }}"
 runs:
   using: "composite"
   steps:
@@ -47,6 +57,7 @@ runs:
       shell: "bash"
       working-directory: "${{ runner.temp }}"
     - name: "Submit Dependencies"
+      id: submit
       run: >-
         ${{ runner.temp }}/mix_dependency_submission_${{ runner.os }}_${{ runner.arch }}
         --project-path="$PROJECT_PATH"

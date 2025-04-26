@@ -13,7 +13,9 @@ defmodule MixDependencySubmission.Application do
     Mix.Hex.start()
 
     if Burrito.Util.running_standalone?() do
-      Submit.run(Args.argv())
+      exit_code = Submit.run(Args.argv())
+
+      System.stop(exit_code)
     end
 
     Supervisor.start_link([], strategy: :one_for_one)
