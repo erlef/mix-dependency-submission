@@ -31,10 +31,16 @@ defmodule MixDependencySubmission.SCM.Hex.SCM do
   """
   @impl SCM
   def mix_dep_to_purl({_app, requirement, opts}, version) do
-    qualifiers =
+    repository_url =
       case repository_url(opts[:repo]) do
-        {:ok, url} -> %{"repository_url" => url}
-        :error -> %{}
+        {:ok, url} -> url
+        :error -> nil
+      end
+
+    qualifiers =
+      case repository_url do
+        "https://repo.hex.pm" -> %{}
+        ^repository_url -> %{"repository_url" => repository_url}
       end
 
     Purl.new!(%Purl{
@@ -70,7 +76,10 @@ defmodule MixDependencySubmission.SCM.Hex.SCM do
         namespace: [],
         name: "jason",
         version: "1.4.0",
-        qualifiers: %{}
+        qualifiers: %{
+          "checksum" => "sha256:checksum",
+          "download_url" => "https://repo.hex.pm/tarballs/jason-1.4.0.tar.gz"
+        }
       }
   """
   @impl SCM
@@ -83,13 +92,24 @@ defmodule MixDependencySubmission.SCM.Hex.SCM do
       _managers,
       _deps,
       repo,
-      _outer_checksum | _rest
+      outer_checksum | _rest
     ] = lock
 
-    qualifiers =
+    repository_url =
       case repository_url(repo) do
-        {:ok, url} -> %{"repository_url" => url}
-        :error -> %{}
+        {:ok, url} -> url
+        :error -> nil
+      end
+
+    qualifiers = %{
+      "checksum" => "sha256:#{outer_checksum}",
+      "download_url" => "#{repository_url}/tarballs/#{package_name}-#{version}.tar.gz"
+    }
+
+    qualifiers =
+      case repository_url do
+        "https://repo.hex.pm" -> qualifiers
+        ^repository_url -> Map.put(qualifiers, "repository_url", repository_url)
       end
 
     Purl.new!(%Purl{
@@ -148,9 +168,7 @@ defmodule MixDependencySubmission.SCM.Hex.SCM do
 
   @spec repository_url(repo :: String.t() | nil) :: {:ok, Purl.qualifier_value()} | :error
   defp repository_url(repo)
-  defp repository_url(nil), do: :error
-  defp repository_url("hexpm"), do: :error
-  defp repository_url("hexpm:" <> _organisation), do: :error
+  defp repository_url(nil), do: repository_url("hexpm")
 
   defp repository_url(repo) do
     with {:ok, %{url: url}} <- Hex.Repo.fetch_repo(repo) do

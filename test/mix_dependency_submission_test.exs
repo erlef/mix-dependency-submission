@@ -95,7 +95,12 @@ defmodule MixDependencySubmissionTest do
                    type: "github",
                    namespace: ["elixir-gettext"],
                    name: "expo",
-                   version: "2ae85019d62288001bdc4a949d65bf650beee315"
+                   version: "2ae85019d62288001bdc4a949d65bf650beee315",
+                   qualifiers: %{
+                     "download_url" =>
+                       "https://github.com/elixir-gettext/expo/archive/2ae85019d62288001bdc4a949d65bf650beee315.tar.gz",
+                     "vcs_url" => "git+https://github.com/elixir-gettext/expo.git"
+                   }
                  },
                  relationship: :direct,
                  scope: :runtime,
@@ -106,7 +111,15 @@ defmodule MixDependencySubmissionTest do
                  relationship: :direct,
                  scope: :runtime,
                  dependencies: [
-                   %Purl{type: "hex", name: "bunt", version: "0.2.1"},
+                   %Purl{
+                     type: "hex",
+                     name: "bunt",
+                     version: "0.2.1",
+                     qualifiers: %{
+                       "checksum" => "sha256:a330bfb4245239787b15005e66ae6845c9cd524a288f0d141c148b02603777a5",
+                       "download_url" => "https://repo.hex.pm/tarballs/bunt-0.2.1.tar.gz"
+                     }
+                   },
                    %Purl{type: "hex", name: "file_system", version: "0.2.10"},
                    %Purl{type: "hex", name: "jason", version: "1.4.0"}
                  ]
@@ -122,9 +135,8 @@ defmodule MixDependencySubmissionTest do
                file: %Submission.Manifest.File{
                  source_location: "mix.exs"
                },
-               resolved: resolved
-               # GitHub 500, try again another time
-               # metadata: %{"license_expression" => "Apache-2.0"}
+               resolved: resolved,
+               metadata: %{"license" => "Apache-2.0"}
              } = MixDependencySubmission.manifest(app_path, paths_relative_to: app_path)
 
       assert %{
@@ -152,9 +164,8 @@ defmodule MixDependencySubmissionTest do
                  file: %Submission.Manifest.File{
                    source_location: "mix.exs"
                  },
-                 resolved: resolved
-                 # GitHub 500, try again another time
-                 # metadata: %{"license_expression" => "Apache-2.0"}
+                 resolved: resolved,
+                 metadata: %{"license" => "Apache-2.0"}
                } = MixDependencySubmission.manifest(app_path, paths_relative_to: app_path, install_deps?: true)
 
         assert %{
@@ -187,32 +198,28 @@ defmodule MixDependencySubmissionTest do
 
       assert %{
                "decimal" => %Dependency{
-                 package_url: %Purl{type: "hex", name: "decimal", version: "2.3.0"},
+                 package_url: %Purl{
+                   type: "hex",
+                   name: "decimal",
+                   version: "2.3.0",
+                   qualifiers: %{"vcs_url" => "https://github.com/ericmj/decimal"}
+                 },
                  relationship: :indirect,
                  scope: :runtime,
                  dependencies: [],
-                 metadata:
-                   %{
-                     # GitHub 500, try again another time
-                     # "description" => "Arbitrary precision decimal arithmetic.",
-                     # "license_expression" => "Apache-2.0",
-                     # "maintainers" => "Eric Meadows-Jönsson",
-                     # "name" => "Decimal",
-                     # "source_url" => "https://github.com/ericmj/decimal"
-                   }
+                 metadata: %{"license" => "Apache-2.0"}
                },
                "number" => %Dependency{
-                 package_url: %Purl{type: "hex", name: "number", version: "1.0.5"},
+                 package_url: %Purl{
+                   type: "hex",
+                   name: "number",
+                   version: "1.0.5",
+                   qualifiers: %{"vcs_url" => "https://github.com/danielberkompas/number"}
+                 },
                  relationship: :direct,
                  scope: :runtime,
                  dependencies: [%Purl{type: "hex", name: "decimal", version: "2.3.0"}],
-                 metadata:
-                   %{
-                     # GitHub 500, try again another time
-                     # "description" => "Convert numbers to various string formats, such as currency",
-                     # "license_expression" => "MIT",
-                     # "maintainers" => "Daniel Berkompas"
-                   }
+                 metadata: %{"license" => "MIT"}
                }
              } = resolved
     end

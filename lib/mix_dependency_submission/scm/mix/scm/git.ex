@@ -27,23 +27,28 @@ defmodule MixDependencySubmission.SCM.Mix.SCM.Git do
         type: "github",
         name: "my_app",
         namespace: ["example"],
-        version: "v1.0.0"
+        version: "v1.0.0",
+        qualifiers: %{
+          "download_url" => "https://github.com/example/my_app/archive/v1.0.0.tar.gz",
+          "vcs_url" => "git+https://github.com/example/my_app.git"
+        }
       }
 
   """
   @impl SCM
   def mix_dep_to_purl({app, requirement, opts}, version) do
-    version = version || opts[:ref] || opts[:branch] || opts[:tag] || requirement
+    git_version = version || opts[:ref] || opts[:branch] || opts[:tag] || "HEAD"
+    app_version = version || opts[:ref] || opts[:branch] || opts[:tag] || requirement || "HEAD"
 
-    case Purl.from_resource_uri(opts[:git]) do
+    case Purl.from_resource_uri(opts[:git], git_version) do
       {:ok, purl} ->
-        %{purl | version: version}
+        purl
 
       :error ->
         Purl.new!(%Purl{
           type: "generic",
           name: Atom.to_string(app),
-          version: version,
+          version: app_version,
           qualifiers: %{"vcs_url" => opts[:git]}
         })
     end
@@ -64,7 +69,11 @@ defmodule MixDependencySubmission.SCM.Mix.SCM.Git do
         type: "github",
         name: "my_app",
         namespace: ["example"],
-        version: "abc123"
+        version: "abc123",
+        qualifiers: %{
+          "download_url" => "https://github.com/example/my_app/archive/abc123.tar.gz",
+          "vcs_url" => "git+https://github.com/example/my_app.git"
+        }
       }
 
   """
@@ -72,9 +81,9 @@ defmodule MixDependencySubmission.SCM.Mix.SCM.Git do
   def mix_lock_to_purl(app, lock) do
     [:git, repo_url, revision | _rest] = lock
 
-    case Purl.from_resource_uri(repo_url) do
+    case Purl.from_resource_uri(repo_url, revision) do
       {:ok, purl} ->
-        %{purl | version: revision}
+        purl
 
       :error ->
         Purl.new!(%Purl{

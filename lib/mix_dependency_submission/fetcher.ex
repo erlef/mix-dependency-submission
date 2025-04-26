@@ -122,24 +122,40 @@ defmodule MixDependencySubmission.Fetcher do
     sub_dependencies =
       Enum.uniq((dependency[:dependencies] || []) ++ lock_dependencies(dependency))
 
+    purl = package_url(dependency, app)
+
+    purl =
+      case mix_config_source_url(dependency[:mix_config]) do
+        nil -> purl
+        url -> %{purl | qualifiers: Map.put_new(purl.qualifiers, "vcs_url", url)}
+      end
+
     metadata =
-      %{
-        # GitHub 500, try again another time
-        # "name" => dependency[:mix_config][:name],
-        # "source_url" => dependency[:mix_config][:source_url],
-        # "description" => dependency[:mix_config][:description],
-        # "maintainers" => Enum.join(dependency[:mix_config][:package][:maintainers] || [], ", "),
-        # "license_expression" => Enum.join(dependency[:mix_config][:package][:licenses] || [], " AND "),
-        # "build_tools" => Enum.map_join(dependency[:mix_config][:package][:build_tools] || [], ", ", &inspect/1)
-      }
+      %{"license" => Enum.join(dependency[:mix_config][:package][:licenses] || [], " AND ")}
 
     %Dependency{
-      package_url: package_url(dependency, app),
+      package_url: purl,
       metadata: drop_empty(metadata),
       relationship: dependency[:relationship],
       scope: dependency[:scope],
       dependencies: sub_dependencies
     }
+  end
+
+  @spec mix_config_source_url(mix_config :: Keyword.t()) :: String.t() | nil
+  defp mix_config_source_url(mix_config) do
+    links =
+      Map.new(mix_config[:package][:links] || %{}, fn {key, value} ->
+        {String.downcase(key), value}
+      end)
+
+    mix_config[:source_url] ||
+      links["github"] ||
+      links["gitlab"] ||
+      links["git"] ||
+      links["source"] ||
+      links["repository"] ||
+      links["bitbucket"]
   end
 
   @spec package_url(dependency(), app_name()) :: Purl.t()
