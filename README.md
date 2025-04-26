@@ -93,7 +93,11 @@ jobs:
 
 ## Outputs
 
-None.
+| Name                   | Description                                 | Example Value                                                                 |
+|------------------------|---------------------------------------------|-------------------------------------------------------------------------------|
+| `submission-json-path` | Path to the generated submission JSON file. | `/tmp/submission-213124323.json`                                              |
+| `snapshot-id`        | ID of the submission.                       | `1234`                                                                        |
+| `snapshot-api-url`   | URL of the submission API.                  | `https://api.github.com/repos/{owner}/{repo}/dependency-graph/snapshots/1234` |
 
 ## OS and Architecture Support
 

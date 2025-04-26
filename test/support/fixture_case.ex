@@ -4,6 +4,12 @@ defmodule MixDependencySubmission.FixtureCase do
 
   alias MixDependencySubmission.Util
 
+  using do
+    quote do
+      import unquote(__MODULE__)
+    end
+  end
+
   setup tags do
     on_exit(fn -> Mix.Project.clear_deps_cache() end)
 
@@ -17,7 +23,7 @@ defmodule MixDependencySubmission.FixtureCase do
   end
 
   @spec prepare_fixture(fixture_app :: String.t(), dest_dir :: Path.t()) :: :ok
-  defp prepare_fixture(fixture_app, dest_dir) do
+  def prepare_fixture(fixture_app, dest_dir) do
     fixture_app |> app_fixture_path() |> File.cp_r!(dest_dir)
 
     mix_file_path = Path.join(dest_dir, "mix.exs")
@@ -32,10 +38,10 @@ defmodule MixDependencySubmission.FixtureCase do
   end
 
   @spec app_fixture_path(app :: String.t()) :: Path.t()
-  defp app_fixture_path(app), do: Path.expand("../../test/fixtures/#{app}", __DIR__)
+  def app_fixture_path(app), do: Path.expand("../../test/fixtures/#{app}", __DIR__)
 
   @spec rewrite_app_name(mix_file_path :: Path.t(), name :: String.t()) :: :ok
-  defp rewrite_app_name(mix_file_path, name) do
+  def rewrite_app_name(mix_file_path, name) do
     mix_file_path
     |> File.read!()
     |> String.replace(inspect(:app_name_to_replace), ":" <> name)
