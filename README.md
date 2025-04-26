@@ -54,6 +54,32 @@ jobs:
       - uses: erlef/mix-dependency-submission@v1
 ```
 
+### Example Using `actions/dependency-review-action`
+
+```yaml
+name: "Mix Dependency Submission"
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request: {}
+
+# The API requires write permission on the repository to submit dependencies
+permissions:
+  contents: write
+
+jobs:
+  report_mix_deps:
+    name: "Report Mix Dependencies"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: erlef/mix-dependency-submission@v1
+      - uses: actions/dependency-review-action@v4
+        if: "${{ github.event_name == 'pull_request' }}"
+```
+
 ## Inputs
 
 | Name           | Description                                                                                 | Default                     |
