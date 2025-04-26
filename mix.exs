@@ -84,7 +84,7 @@ defmodule MixDependencySubmission.MixProject do
       {:jason, "~> 1.4"},
       {:optimus, "~> 0.2"},
       {:plug, "~> 1.0", only: [:test]},
-      {:purl, "~> 0.2.0"},
+      {:purl, "~> 0.3.0"},
       {:req, "~> 0.5.6"},
       {:styler, "~> 1.1", only: [:dev, :test], runtime: false}
     ]

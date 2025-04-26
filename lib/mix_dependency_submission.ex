@@ -179,15 +179,7 @@ defmodule MixDependencySubmission do
         ) :: Manifest.t()
   defp make_manifest(dependencies, project_path, paths_relative_to) do
     metadata =
-      %{
-        # GitHub 500, try again another time
-        # "name" => Mix.Project.config()[:name],
-        # "source_url" => Mix.Project.config()[:source_url],
-        # "description" => Mix.Project.config()[:description],
-        # "maintainers" => Enum.join(Mix.Project.config()[:package][:maintainers] || [], ", "),
-        # "license_expression" => Enum.join(Mix.Project.config()[:package][:licenses] || [], " AND "),
-        # "build_tools" => Enum.map_join(Mix.Project.config()[:package][:build_tools] || [], ", ", &inspect/1)
-      }
+      %{"license" => Enum.join(Mix.Project.config()[:package][:licenses] || [], " AND ")}
 
     %Manifest{
       name: "mix.exs",
