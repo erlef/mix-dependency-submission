@@ -81,7 +81,7 @@ defmodule MixDependencySubmission.CLI do
             help: "GitHub Actions Workflow Name"
           ),
         sha:
-          optimus_options_with_env_default("GITHUB_SHA",
+          sha_option(
             value_name: "SHA",
             long: "--sha",
             help: "Current Git SHA"
@@ -139,5 +139,42 @@ defmodule MixDependencySubmission.CLI do
       {:ok, value} -> [default: value]
       :error -> [required: true]
     end ++ details
+  end
+
+  @spec sha_option(Keyword.t()) :: Keyword.t()
+  defp sha_option(base_opts) do
+    # If the GitHub event is a pull request, we need to use the head SHA of the PR
+    # instead of the commit SHA of the workflow run.
+    # This is because the workflow run is triggered by the base commit of the PR,
+    # and we want to report the dependencies of the head commit.
+    # See: https://github.com/github/dependency-submission-toolkit/blob/72f5e31325b5e1bcc91f1b12eb7abe68e75b2105/src/snapshot.ts#L36-L61
+    case load_pr_head_sha() do
+      {:ok, sha} ->
+        Keyword.put(base_opts, :default, sha)
+
+      :error ->
+        # If we can't load the PR head SHA, we fall back to the default behavior
+        # of using the GITHUB_SHA environment variable.
+        optimus_options_with_env_default("GITHUB_SHA", base_opts)
+    end
+  end
+
+  # Note that pull_request_target is omitted here.
+  # That event runs in the context of the base commit of the PR,
+  # so the snapshot should not be associated with the head commit.
+
+  @pr_events ~w[pull_request pull_request_comment pull_request_review pull_request_review_comment]
+
+  @spec load_pr_head_sha :: {:ok, <<_::320>>} | :error
+  defp load_pr_head_sha do
+    with {:ok, event} when event in @pr_events <- System.fetch_env("GITHUB_EVENT_NAME"),
+         {:ok, event_path} <- System.fetch_env("GITHUB_EVENT_PATH") do
+      event_details_json = File.read!(event_path)
+
+      %{"pull_request" => %{"head" => %{"sha" => <<_binary::320>> = sha}}} =
+        JSON.decode!(event_details_json)
+
+      {:ok, sha}
+    end
   end
 end

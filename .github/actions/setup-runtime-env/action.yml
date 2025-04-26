@@ -18,7 +18,7 @@ runs:
     - name: "Cache Deps / Build"
       uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684 # v4.2.3
       with:
-        path: >-
+        path: |-
           deps
           _build
         key: "${{ format('{0}-{1}-{2}', inputs.mix-env, hashFiles('.tool-versions'), hashFiles('mix.exs')) }}"
