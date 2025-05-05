@@ -146,7 +146,7 @@ defmodule MixDependencySubmission.Fetcher do
   defp mix_config_source_url(mix_config) do
     links =
       Map.new(mix_config[:package][:links] || %{}, fn {key, value} ->
-        {String.downcase(key), value}
+        {String.downcase(to_string(key)), value}
       end)
 
     mix_config[:source_url] ||
