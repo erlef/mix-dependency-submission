@@ -147,5 +147,4 @@ $ mix docs
 ## How-To Update Erlang / Elixir
 
 * Update Versions in `.tool-versions`
-* Put the same versions into `action.yaml` / `steps` / `setup-beam`
 * Put the same versions into `mix.exs` / `project/0` / `:elixir`
