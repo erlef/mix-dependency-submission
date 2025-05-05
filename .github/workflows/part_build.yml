@@ -31,7 +31,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: mlugg/setup-zig@153c8d5202cbb8c7e10831110a3afd27593eb960 # latest main
+      - uses: mlugg/setup-zig@915f70607f6642da2dd36333035f4221a7bc8618 # latest main
         with:
           version: 0.14.0
 
@@ -44,7 +44,7 @@ jobs:
 
       - run: mix release --overwrite
       - name: "Attest provenance"
-        uses: actions/attest-build-provenance@c074443f1aee8d4aeeae555aebba3282517141b2 # v2.2.3
+        uses: actions/attest-build-provenance@db473fddc028af60658334401dc6fa3ffd8669fd # v2.3.0
         id: attest-provenance
         if: "${{ inputs.attest }}"
         with:
