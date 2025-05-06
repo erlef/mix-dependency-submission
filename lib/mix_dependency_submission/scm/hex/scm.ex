@@ -40,6 +40,9 @@ defmodule MixDependencySubmission.SCM.Hex.SCM do
     qualifiers =
       case repository_url do
         "https://repo.hex.pm" -> %{}
+        # Unknown repository URL, do not include it in the qualifiers
+        # to avoid exposing it in the PURL.
+        nil -> %{}
         ^repository_url -> %{"repository_url" => repository_url}
       end
 
@@ -102,14 +105,29 @@ defmodule MixDependencySubmission.SCM.Hex.SCM do
       end
 
     qualifiers = %{
-      "checksum" => "sha256:#{outer_checksum}",
-      "download_url" => "#{repository_url}/tarballs/#{package_name}-#{version}.tar.gz"
+      "checksum" => "sha256:#{outer_checksum}"
     }
 
     qualifiers =
       case repository_url do
         "https://repo.hex.pm" -> qualifiers
+        # Unknown repository URL, do not include it in the qualifiers
+        # to avoid exposing it in the PURL.
+        nil -> qualifiers
         ^repository_url -> Map.put(qualifiers, "repository_url", repository_url)
+      end
+
+    qualifiers =
+      case repository_url do
+        nil ->
+          qualifiers
+
+        ^repository_url ->
+          Map.put(
+            qualifiers,
+            "download_url",
+            "#{repository_url}/tarballs/#{package_name}-#{version}.tar.gz"
+          )
       end
 
     Purl.new!(%Purl{
