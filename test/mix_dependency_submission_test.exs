@@ -60,6 +60,82 @@ defmodule MixDependencySubmissionTest do
     end
 
     @tag :tmp_dir
+    @tag fixture_app: "private_repo"
+    test "generates valid submission for 'private_repo' fixture", %{app_path: app_path} do
+      Mix.Task.rerun("hex.repo", ["remove", "0ban"])
+
+      assert %Submission{manifests: %{"mix.exs" => %Submission.Manifest{resolved: resolved}}} =
+               MixDependencySubmission.submission(
+                 github_job_id: "github_job_id",
+                 github_workflow: "github_workflow",
+                 sha: "sha",
+                 ref: "ref",
+                 project_path: app_path,
+                 paths_relative_to: app_path,
+                 install_deps?: false
+               )
+
+      assert %{
+               "oban_pro" => %Dependency{
+                 scope: :runtime,
+                 metadata: %{},
+                 dependencies: _deps,
+                 relationship: :direct,
+                 package_url: %Purl{
+                   type: "hex",
+                   namespace: ["0ban"],
+                   name: "oban_pro",
+                   version: "1.5.4",
+                   qualifiers: %{
+                     "checksum" => "sha256:f4e57237b17110f9ec55d332aa0c090e17137d2328d8a787350b1772ae64eb57"
+                   }
+                 }
+               }
+             } = resolved
+
+      Mix.Task.rerun("hex.repo", [
+        "add",
+        "0ban",
+        "https://getoban.pro/repo",
+        "--fetch-public-key",
+        "SHA256:4/OSKi0NRF91QVVXlGAhb/BIMLnK8NHcx/EWs+aIWPc",
+        "--auth-key",
+        "invalid"
+      ])
+
+      assert %Submission{manifests: %{"mix.exs" => %Submission.Manifest{resolved: resolved}}} =
+               MixDependencySubmission.submission(
+                 github_job_id: "github_job_id",
+                 github_workflow: "github_workflow",
+                 sha: "sha",
+                 ref: "ref",
+                 project_path: app_path,
+                 paths_relative_to: app_path,
+                 install_deps?: false
+               )
+
+      assert %{
+               "oban_pro" => %Dependency{
+                 scope: :runtime,
+                 metadata: %{},
+                 dependencies: _deps,
+                 relationship: :direct,
+                 package_url: %Purl{
+                   type: "hex",
+                   namespace: ["0ban"],
+                   name: "oban_pro",
+                   version: "1.5.4",
+                   qualifiers: %{
+                     "checksum" => "sha256:f4e57237b17110f9ec55d332aa0c090e17137d2328d8a787350b1772ae64eb57",
+                     "download_url" => "https://getoban.pro/repo/tarballs/oban_pro-1.5.4.tar.gz",
+                     "repository_url" => "https://getoban.pro/repo"
+                   }
+                 }
+               }
+             } = resolved
+    end
+
+    @tag :tmp_dir
     test "empty submission for project without mix.exs", %{tmp_dir: tmp_dir} do
       Util.in_project(tmp_dir, fn _mix_module ->
         assert %Submission{manifests: manifests} =
