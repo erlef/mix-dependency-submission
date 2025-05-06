@@ -46,6 +46,9 @@ jobs:
   report_deps:
     name: "Report Dependencies"
 
+    # PRs from external forks do not have access to the Submission API
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
+
     needs: ['build']
 
     permissions:
@@ -55,6 +58,9 @@ jobs:
 
   dependency-review:
     name: "Dependency Review"
+
+    # PRs from external forks do not have access to the Submission API
+    if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
 
     needs: ['report_deps']
 
