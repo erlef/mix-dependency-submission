@@ -77,7 +77,7 @@ defmodule MixDependencySubmission.MixProject do
       {:burrito, "~> 1.0"},
       {:credo, "~> 1.0", only: [:dev], runtime: false},
       {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
-      {:doctest_formatter, "~> 0.3.1", runtime: false},
+      {:doctest_formatter, "~> 0.4.0", runtime: false},
       {:ex_doc, ">= 0.0.0", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.5", only: [:test], runtime: false},
       {:hex, github: "hexpm/hex", tag: "v2.2.1", runtime: false},
