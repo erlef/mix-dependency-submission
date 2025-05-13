@@ -72,7 +72,7 @@ defmodule MixDependencySubmission.SCM.Hex.SCM do
       ...>   "hexpm",
       ...>   "checksum"
       ...> ]
-      ...> 
+      ...>
       ...> MixDependencySubmission.SCM.Hex.SCM.mix_lock_to_purl(:jason, lock)
       %Purl{
         type: "hex",
@@ -157,7 +157,7 @@ defmodule MixDependencySubmission.SCM.Hex.SCM do
       ...>   "hexpm",
       ...>   "checksum"
       ...> ]
-      ...> 
+      ...>
       ...> MixDependencySubmission.SCM.Hex.SCM.mix_lock_deps(lock)
       [:dep_a, :dep_b]
   """
