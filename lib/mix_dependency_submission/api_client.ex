@@ -29,7 +29,7 @@ defmodule MixDependencySubmission.ApiClient do
       ...>   scanned: DateTime.utc_now(),
       ...>   manifests: %{}
       ...> }
-      ...> 
+      ...>
       ...> {:ok, %Req.Response{} = response} =
       ...>   MixDependencySubmission.ApiClient.submit(
       ...>     submission,

@@ -20,7 +20,7 @@ defmodule MixDependencySubmission.CLI do
 
       iex> argv =
       ...>   ~w[--github-repository org/repo --github-job-id 123 --github-workflow build --sha sha --ref refs/heads/main --github-token ghp_xxx]
-      ...> 
+      ...>
       ...> result = MixDependencySubmission.CLI.parse!(argv)
       ...> result.options.github_repository
       "org/repo"
