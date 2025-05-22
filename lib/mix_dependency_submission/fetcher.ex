@@ -55,6 +55,27 @@ defmodule MixDependencySubmission.Fetcher do
 
   @manifest_fetchers [__MODULE__.MixFile, __MODULE__.MixLock, __MODULE__.MixRuntime]
 
+  @static_deps %{
+    elixir: %{
+      scm: MixDependencySubmission.SCM.System,
+      mix_dep: {:elixir, nil, []},
+      relationship: :direct,
+      scope: :runtime
+    },
+    stdlib: %{
+      scm: MixDependencySubmission.SCM.System,
+      mix_dep: {:stdlib, nil, []},
+      relationship: :direct,
+      scope: :runtime
+    },
+    kernel: %{
+      scm: MixDependencySubmission.SCM.System,
+      mix_dep: {:kernel, nil, []},
+      relationship: :direct,
+      scope: :runtime
+    }
+  }
+
   @doc """
   Fetches and merges dependencies from all registered fetchers.
 
@@ -87,13 +108,26 @@ defmodule MixDependencySubmission.Fetcher do
         Map.merge(acc || %{}, dependencies, &merge/3)
     end)
     |> case do
-      nil -> nil
-      %{} = deps -> transform_all(deps)
+      nil ->
+        nil
+
+      %{} = deps ->
+        deps = Map.merge(deps, @static_deps, &merge/3)
+
+        transform_all(deps)
     end
   end
 
   @spec merge(app_name(), left :: dependency(), right :: dependency()) :: dependency()
-  defp merge(_app, left, right), do: Map.merge(left, right)
+  defp merge(_app, left, right), do: Map.merge(left, right, &merge_property/3)
+
+  @spec merge_property(key :: atom(), left :: value, right :: value) :: value when value: term()
+  defp merge_property(key, left, right)
+  defp merge_property(_key, value, value), do: value
+  defp merge_property(:relationship, :direct, _right), do: :direct
+  defp merge_property(:relationship, _left, :direct), do: :direct
+  defp merge_property(:dependencies, left, right), do: Enum.uniq(left ++ right)
+  defp merge_property(_key, _left, right), do: right
 
   @spec transform_all(dependencies :: %{app_name() => dependency()}) :: %{
           String.t() => Dependency.t()

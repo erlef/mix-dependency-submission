@@ -199,6 +199,34 @@ defmodule MixDependencySubmissionTest do
                    %Purl{type: "hex", name: "file_system", version: "0.2.10"},
                    %Purl{type: "hex", name: "jason", version: "1.4.0"}
                  ]
+               },
+               "elixir" => %Dependency{
+                 scope: :runtime,
+                 metadata: %{},
+                 dependencies: [],
+                 relationship: :direct,
+                 package_url: %Purl{
+                   type: "generic",
+                   # TODO: Use once the spec is merged
+                   # type: "otp",
+                   name: "elixir",
+                   qualifiers: %{"vcs_url" => "git+https://github.com/elixir-lang/elixir.git"},
+                   subpath: ["lib", "elixir"]
+                 }
+               },
+               "stdlib" => %Dependency{
+                 scope: :runtime,
+                 metadata: %{},
+                 dependencies: [],
+                 relationship: :direct,
+                 package_url: %Purl{
+                   type: "generic",
+                   # TODO: Use once the spec is merged
+                   # type: "otp",
+                   name: "stdlib",
+                   qualifiers: %{"vcs_url" => "git+https://github.com/erlang/otp.git"},
+                   subpath: ["lib", "stdlib"]
+                 }
                }
              } = resolved
     end
