@@ -31,7 +31,7 @@ jobs:
         with:
           egress-policy: audit
 
-      - uses: mlugg/setup-zig@aa9ad5c14eb3452e235a441c4f9a8e89f20d97bd # latest main
+      - uses: mlugg/setup-zig@7dccf5e6d09267c55f815f2db29495f30ba2ebca # latest main
         with:
           version: 0.14.0
 
