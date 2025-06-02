@@ -55,6 +55,24 @@ defmodule MixDependencySubmission.Fetcher.MixFileTest do
                         depth: 1
                       ]},
                    relationship: :direct
+                 },
+                 elixir: %{
+                   scope: :runtime,
+                   scm: MixDependencySubmission.SCM.System,
+                   mix_dep: {:elixir, "1.18.4", [app: :elixir, build: _elixir_build, dest: _elixir_dest]},
+                   relationship: :direct
+                 },
+                 logger: %{
+                   scope: :runtime,
+                   scm: MixDependencySubmission.SCM.System,
+                   mix_dep: {:logger, nil, [app: :logger, build: _logger_build, dest: _logger_dest]},
+                   relationship: :direct
+                 },
+                 public_key: %{
+                   scope: :runtime,
+                   scm: MixDependencySubmission.SCM.System,
+                   mix_dep: {:public_key, nil, [app: :public_key, build: _public_key_build, dest: _public_key_dest]},
+                   relationship: :direct
                  }
                } = MixFile.fetch()
       end)

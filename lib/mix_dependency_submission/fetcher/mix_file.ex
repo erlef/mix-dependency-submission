@@ -35,7 +35,25 @@ defmodule MixDependencySubmission.Fetcher.MixFile do
   """
   @impl Fetcher
   def fetch do
-    Mix.Project.config()[:deps] |> List.wrap() |> Map.new(&normalize_dep/1)
+    app_config = get_application_config()
+
+    [
+      Mix.Project.config()[:deps] || [],
+      [{:elixir, Mix.Project.config()[:elixir], []}],
+      Enum.map(app_config[:applications] || [], &{&1, []}),
+      Enum.map(app_config[:extra_applications] || [], &{&1, []}),
+      Enum.map(app_config[:included_applications] || [], &{&1, included: true})
+    ]
+    |> Enum.concat()
+    |> Enum.uniq_by(&elem(&1, 0))
+    |> Map.new(&normalize_dep/1)
+  end
+
+  @spec get_application_config() :: Keyword.t()
+  defp get_application_config do
+    Mix.Project.get!().application()
+  rescue
+    UndefinedFunctionError -> []
   end
 
   @spec normalize_dep(
