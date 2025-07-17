@@ -7,7 +7,7 @@ defmodule MixDependencySubmission.CLI.SubmitTest do
   alias MixDependencySubmission.ApiClient
   alias MixDependencySubmission.CLI.Submit
 
-  doctest MixDependencySubmission.CLI.Submit, except: [run: 1]
+  doctest Submit, except: [run: 1]
 
   describe inspect(&Submit.run/2) do
     @tag :tmp_dir

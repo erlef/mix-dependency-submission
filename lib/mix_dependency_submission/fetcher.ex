@@ -21,7 +21,7 @@ defmodule MixDependencySubmission.Fetcher do
           optional(:scm) => module(),
           optional(:version) => String.t(),
           optional(:mix_dep) => mix_dep(),
-          optional(:mix_lock) => MixDependencySubmission.SCM.lock(),
+          optional(:mix_lock) => SCM.lock(),
           optional(:scope) => Dependency.scope(),
           optional(:relationship) => Dependency.relationship(),
           optional(:dependencies) => [app_name()],
