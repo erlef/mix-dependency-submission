@@ -9,6 +9,15 @@ defmodule MixDependencySubmissionTest do
 
   doctest MixDependencySubmission, except: [submission: 1]
 
+  setup do
+    # Remove :os_mon from path to test what happens if an application is not found
+    with :ok <- Application.load(:os_mon) do
+      :os_mon |> Application.app_dir("ebin") |> Code.delete_path()
+    end
+
+    :ok
+  end
+
   describe inspect(&MixDependencySubmission.submission/1) do
     @tag :tmp_dir
     @tag fixture_app: "umbrella"
@@ -212,6 +221,20 @@ defmodule MixDependencySubmissionTest do
                    name: "elixir",
                    qualifiers: %{"vcs_url" => "git+https://github.com/elixir-lang/elixir.git"},
                    subpath: ["lib", "elixir"]
+                 }
+               },
+               "os_mon" => %Dependency{
+                 scope: :runtime,
+                 metadata: %{},
+                 dependencies: [],
+                 relationship: :direct,
+                 package_url: %Purl{
+                   type: "generic",
+                   # TODO: Use once the spec is merged
+                   # type: "otp",
+                   name: "os_mon",
+                   qualifiers: %{"vcs_url" => "git+https://github.com/erlang/otp.git"},
+                   subpath: ["lib", "os_mon"]
                  }
                },
                "stdlib" => %Dependency{
