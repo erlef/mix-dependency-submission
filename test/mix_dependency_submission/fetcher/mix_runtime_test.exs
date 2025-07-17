@@ -58,8 +58,16 @@ defmodule MixDependencySubmission.Fetcher.MixRuntimeTest do
                    version: nil,
                    mix_config: [],
                    scm: Hex.SCM,
-                   dependencies: [],
+                   dependencies: [:kernel, :stdlib, :elixir, :logger],
                    relationship: :direct
+                 },
+                 logger: %{
+                   scope: :runtime,
+                   version: nil,
+                   mix_config: [{:app, :logger} | _logger_rest],
+                   scm: MixDependencySubmission.SCM.System,
+                   dependencies: [],
+                   relationship: :indirect
                  }
                } = MixRuntime.fetch()
       end)
