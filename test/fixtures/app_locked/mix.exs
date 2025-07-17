@@ -18,7 +18,7 @@ defmodule AppNameToReplace.MixProject do
 
   def application do
     [
-      extra_applications: [:logger, :public_key]
+      extra_applications: [:logger, :public_key, :os_mon]
     ]
   end
 end

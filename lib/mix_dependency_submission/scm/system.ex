@@ -24,8 +24,15 @@ defmodule MixDependencySubmission.SCM.System do
   @impl Mix.SCM
   def accepts_options(app, opts)
 
-  def accepts_options(app, opts) when is_system_app(app),
-    do: Keyword.merge(opts, app: app, build: Application.app_dir(app), dest: Application.app_dir(app))
+  def accepts_options(app, opts) when is_system_app(app) do
+    opts = Keyword.put(opts, :app, app)
+
+    if reachable_application?(app) do
+      Keyword.merge(opts, build: Application.app_dir(app), dest: Application.app_dir(app))
+    else
+      opts
+    end
+  end
 
   def accepts_options(_app, _opts), do: nil
 
@@ -57,6 +64,15 @@ defmodule MixDependencySubmission.SCM.System do
   @impl Mix.SCM
   @dialyzer {:no_return, update: 1}
   def update(_opts), do: Mix.raise("System SCM does not support update.")
+
+  @spec reachable_application?(app :: atom()) :: boolean()
+  defp reachable_application?(app) do
+    case Application.load(app) do
+      :ok -> true
+      {:error, {:already_loaded, ^app}} -> true
+      {:error, {~c"no such file or directory", _app}} -> false
+    end
+  end
 end
 
 defmodule MixDependencySubmission.SCM.MixDependencySubmission.SCM.System do
