@@ -90,7 +90,7 @@ jobs:
 
       - name: "Can call snapshot-api-url"
         id: snapshot-api-call
-        uses: fjogeleit/http-request-action@23ad54bcd1178fcff6a0d17538fa09de3a7f0a4d #v1.16.4
+        uses: fjogeleit/http-request-action@1297c6fc63a79b147d1676540a3fd9d2e37817c5 #v1.16.5
         with:
           url: "${{ steps.submit.outputs.snapshot-api-url }}"
           method: "GET"
