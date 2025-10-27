@@ -21,16 +21,22 @@ defmodule MixDependencySubmission.MixProject do
       ],
       description: @description,
       dialyzer: [list_unused_filters: true],
-      preferred_cli_env: [
+      source_url: @source_url,
+      releases: releases(),
+      test_ignore_filters: [~r|test/fixtures/.+|]
+    ]
+  end
+
+  def cli do
+    [
+      preferred_env: [
         coveralls: :test,
         "coveralls.detail": :test,
         "coveralls.html": :test,
         "coveralls.json": :test,
         "coveralls.post": :test,
         "coveralls.xml": :test
-      ],
-      source_url: @source_url,
-      releases: releases()
+      ]
     ]
   end
 
