@@ -10,7 +10,7 @@ defmodule MixDependencySubmission.MixProject do
     [
       app: :mix_dependency_submission,
       version: @version,
-      elixir: "1.19.1",
+      elixir: "1.19.2",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       docs: docs(),
@@ -86,7 +86,7 @@ defmodule MixDependencySubmission.MixProject do
       {:doctest_formatter, "~> 0.4.0", runtime: false},
       {:ex_doc, ">= 0.0.0", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.5", only: [:test], runtime: false},
-      {:hex, github: "hexpm/hex", tag: "v2.2.2", runtime: false},
+      {:hex, github: "hexpm/hex", tag: "v2.3.1", runtime: false},
       {:jason, "~> 1.4"},
       {:optimus, "~> 0.2"},
       {:plug, "~> 1.0", only: [:test]},
