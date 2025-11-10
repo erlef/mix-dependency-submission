@@ -35,6 +35,10 @@ defmodule MixDependencySubmission.Submission do
     url: URI.new!(@url)
   }
 
+  # https://github.com/elixir-lang/elixir/issues/14837
+  # Issue with opaque URI.t() type
+  @dialyzer {:nowarn_function, new: 1}
+
   @doc """
   Creates a new dependency submission struct from GitHub-related metadata and resolved manifests.
 
@@ -86,7 +90,6 @@ defmodule MixDependencySubmission.Submission do
             optional(:scanned) => DateTime.t()
           }
         ) :: t()
-
   def new(
         %{github_job_id: github_job_id, github_workflow: github_workflow, sha: sha, ref: ref, manifests: manifests} =
           options
