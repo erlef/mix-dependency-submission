@@ -5,7 +5,7 @@ defmodule MixDependencySubmission.Submission.Manifest.DependencyTest do
 
   doctest Dependency
 
-  describe "Jason.Encoder" do
+  describe "JSON.Encoder" do
     test "encodes filled struct" do
       dependency = %Dependency{
         package_url: %Purl{type: "hex", name: "gettext"},
@@ -23,13 +23,13 @@ defmodule MixDependencySubmission.Submission.Manifest.DependencyTest do
                "package_url" => "pkg:hex/gettext",
                "relationship" => "direct",
                "scope" => "runtime"
-             } = dependency |> Jason.encode!() |> Jason.decode!()
+             } = dependency |> JSON.encode!() |> JSON.decode!()
     end
 
     test "encodes empty struct" do
       dependency = %Dependency{}
 
-      assert %{} == dependency |> Jason.encode!() |> Jason.decode!()
+      assert %{} == dependency |> JSON.encode!() |> JSON.decode!()
     end
   end
 end

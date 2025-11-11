@@ -5,19 +5,19 @@ defmodule MixDependencySubmission.Submission.Manifest.FileTest do
 
   doctest File
 
-  describe "Jason.Encoder" do
+  describe "JSON.Encoder" do
     test "encodes filled struct" do
       file = %File{
         source_location: "mix.exs"
       }
 
-      assert %{"source_location" => "mix.exs"} = file |> Jason.encode!() |> Jason.decode!()
+      assert %{"source_location" => "mix.exs"} = file |> JSON.encode!() |> JSON.decode!()
     end
 
     test "encodes empty struct" do
       file = %File{}
 
-      assert %{} == file |> Jason.encode!() |> Jason.decode!()
+      assert %{} == file |> JSON.encode!() |> JSON.decode!()
     end
   end
 end

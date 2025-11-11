@@ -14,15 +14,15 @@ defmodule MixDependencySubmission.Submission.Job do
   @enforce_keys [:id, :correlator]
   defstruct [:id, :correlator, html_url: nil]
 
-  defimpl Jason.Encoder do
-    @impl Jason.Encoder
-    def encode(value, opts) do
+  defimpl JSON.Encoder do
+    @impl JSON.Encoder
+    def encode(value, encoder) do
       value
       |> Map.from_struct()
       |> Map.update!(:html_url, &uri_to_string/1)
       |> Enum.reject(&match?({_key, nil}, &1))
       |> Map.new()
-      |> Jason.Encode.map(opts)
+      |> encoder.(encoder)
     end
 
     @spec uri_to_string(uri :: URI.t()) :: String.t()

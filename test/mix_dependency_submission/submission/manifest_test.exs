@@ -6,7 +6,7 @@ defmodule MixDependencySubmission.Submission.ManifestTest do
 
   doctest Manifest
 
-  describe "Jason.Encoder" do
+  describe "JSON.Encoder" do
     test "encodes filled struct" do
       manifest = %Manifest{
         name: "test",
@@ -21,7 +21,7 @@ defmodule MixDependencySubmission.Submission.ManifestTest do
                "name" => "test",
                "resolved" => %{}
              } =
-               manifest |> Jason.encode!() |> Jason.decode!()
+               manifest |> JSON.encode!() |> JSON.decode!()
     end
 
     test "encodes partial struct" do
@@ -29,7 +29,7 @@ defmodule MixDependencySubmission.Submission.ManifestTest do
         name: "test"
       }
 
-      assert %{"name" => "test"} = manifest |> Jason.encode!() |> Jason.decode!()
+      assert %{"name" => "test"} = manifest |> JSON.encode!() |> JSON.decode!()
     end
   end
 end
