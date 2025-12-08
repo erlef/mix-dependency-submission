@@ -28,10 +28,10 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        uses: step-security/harden-runner@df199fb7be9f65074067a9eb93f12bb4c5547cf2 # v2.13.3
         with:
           egress-policy: audit
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8 # v6.0.1
 
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -90,7 +90,7 @@ jobs:
 
       - name: "Can call snapshot-api-url"
         id: snapshot-api-call
-        uses: fjogeleit/http-request-action@1297c6fc63a79b147d1676540a3fd9d2e37817c5 #v1.16.5
+        uses: fjogeleit/http-request-action@c0b95d02a088b47c1f2f4db04fd8af8bd19eee54 #v1.16.6
         with:
           url: "${{ steps.submit.outputs.snapshot-api-url }}"
           method: "GET"
