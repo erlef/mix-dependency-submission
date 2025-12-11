@@ -212,12 +212,12 @@ defmodule MixDependencySubmissionTest do
                "elixir" => %Dependency{
                  scope: :runtime,
                  metadata: %{},
-                 dependencies: [],
+                 dependencies: [
+                   %Purl{type: "generic", name: "stdlib"}
+                 ],
                  relationship: :direct,
                  package_url: %Purl{
                    type: "generic",
-                   # TODO: Use once the spec is merged
-                   # type: "otp",
                    name: "elixir",
                    qualifiers: %{"vcs_url" => "git+https://github.com/elixir-lang/elixir.git"},
                    subpath: ["lib", "elixir"]
@@ -230,8 +230,6 @@ defmodule MixDependencySubmissionTest do
                  relationship: :direct,
                  package_url: %Purl{
                    type: "generic",
-                   # TODO: Use once the spec is merged
-                   # type: "otp",
                    name: "os_mon",
                    qualifiers: %{"vcs_url" => "git+https://github.com/erlang/otp.git"},
                    subpath: ["lib", "os_mon"]
@@ -240,12 +238,12 @@ defmodule MixDependencySubmissionTest do
                "stdlib" => %Dependency{
                  scope: :runtime,
                  metadata: %{},
-                 dependencies: [],
-                 relationship: :direct,
+                 dependencies: [
+                   %Purl{type: "generic", name: "kernel"}
+                 ],
+                 relationship: :indirect,
                  package_url: %Purl{
                    type: "generic",
-                   # TODO: Use once the spec is merged
-                   # type: "otp",
                    name: "stdlib",
                    qualifiers: %{"vcs_url" => "git+https://github.com/erlang/otp.git"},
                    subpath: ["lib", "stdlib"]
@@ -297,7 +295,7 @@ defmodule MixDependencySubmissionTest do
 
         assert %{
                  "credo" => %Dependency{
-                   package_url: %Purl{type: "hex", name: "credo", version: "1.7.13"},
+                   package_url: %Purl{type: "hex", name: "credo", version: "1.7.14"},
                    relationship: :direct,
                    scope: :runtime,
                    dependencies: [_credo_one | _credo_rest]
@@ -377,7 +375,6 @@ defmodule MixDependencySubmissionTest do
                "child_app_name_to_replace" => %Dependency{
                  package_url: %Purl{type: "generic", name: "child_app_name_to_replace", version: "0.0.0-dev"},
                  relationship: :direct,
-                 scope: :runtime,
                  dependencies: [%Purl{type: "hex", name: "mime", version: "2.0.6"}]
                },
                "credo" => %Dependency{},

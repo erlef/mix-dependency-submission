@@ -10,9 +10,10 @@ defmodule MixDependencySubmission.MixProject do
     [
       app: :mix_dependency_submission,
       version: @version,
-      elixir: "1.19.2",
+      elixir: "1.19.4",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
+      archives: archives(),
       docs: docs(),
       elixirc_paths: elixirc_paths(Mix.env()),
       test_coverage: [
@@ -86,16 +87,23 @@ defmodule MixDependencySubmission.MixProject do
       {:doctest_formatter, "~> 0.4.0", runtime: false},
       {:ex_doc, ">= 0.0.0", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.5", only: [:test], runtime: false},
-      {:hex, github: "hexpm/hex", tag: "v2.3.1", runtime: false},
       {:jason, "~> 1.4"},
-      {:optimus, "~> 0.2"},
+      {:optimus, "~> 0.5.1"},
       {:plug, "~> 1.0", only: [:test]},
       {:purl, "~> 0.3.0"},
       {:req, "~> 0.5.6"},
+      # TODO: Update to stable release when available
+      {:sbom, "~> 0.8.0-beta"},
       {:styler, "~> 1.1", only: [:dev, :test], runtime: false}
     ]
   end
 
   defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_env), do: ["lib"]
+
+  defp archives do
+    [
+      {:hex, "~> 2.3"}
+    ]
+  end
 end
