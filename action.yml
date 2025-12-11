@@ -43,7 +43,7 @@ runs:
       shell: "bash"
       working-directory: "${{ runner.temp }}"
       env:
-        TAG: "v1.2.2"
+        TAG: "v1.3.0-beta.1"
         GITHUB_TOKEN: ${{ github.token }}
     - name: "Verify Dependency Submission Tool Provenance"
       run: >-
@@ -54,7 +54,7 @@ runs:
       shell: "bash"
       working-directory: "${{ runner.temp }}"
       env:
-        TAG: "v1.2.2"
+        TAG: "v1.3.0-beta.1"
         GITHUB_TOKEN: ${{ github.token }}
     - name: "Make Tool Executable"
       run: "chmod +x mix_dependency_submission"
