@@ -16,8 +16,8 @@ jobs:
         runner:
           - ubuntu-24.04 # X64
           - ubuntu-24.04-arm # ARM64
-          - macos-13 # ARM64
-          - macos-15 # X64
+          - macos-15-intel # X64
+          - macos-15 # ARM64
           - windows-2025 # X64
           # Not currently supported by Burrito
           # - windows-11-arm # ARM64
