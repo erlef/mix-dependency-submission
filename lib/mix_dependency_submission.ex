@@ -18,9 +18,9 @@ defmodule MixDependencySubmission do
 
   """
 
-  alias MixDependencySubmission.Fetcher
   alias MixDependencySubmission.Submission
   alias MixDependencySubmission.Submission.Manifest
+  alias MixDependencySubmission.Submission.Manifest.Dependency
   alias MixDependencySubmission.Util
 
   @doc """
@@ -147,7 +147,7 @@ defmodule MixDependencySubmission do
         Mix.Task.run("deps.get")
       end
 
-      make_manifest(Fetcher.fetch(), project_path, options[:paths_relative_to])
+      make_manifest(SBoM.CycloneDX.bom(), project_path, options[:paths_relative_to])
     end)
   end
 
@@ -173,11 +173,11 @@ defmodule MixDependencySubmission do
   end
 
   @spec make_manifest(
-          dependencies :: %{String.t() => Manifest.Dependency.t()} | nil,
+          bom :: SBoM.CycloneDX.V17.Bom.t(),
           project_path :: Path.t(),
           paths_relative_to :: Path.t()
         ) :: Manifest.t()
-  defp make_manifest(dependencies, project_path, paths_relative_to) do
+  defp make_manifest(bom, project_path, paths_relative_to) do
     metadata =
       %{"license" => Enum.join(Mix.Project.config()[:package][:licenses] || [], " AND ")}
 
@@ -186,7 +186,10 @@ defmodule MixDependencySubmission do
       file: %Manifest.File{
         source_location: project_path |> Path.join("mix.exs") |> Path.relative_to(paths_relative_to)
       },
-      resolved: dependencies,
+      resolved:
+        for component <- bom.components, into: %{} do
+          {component.name, Dependency.from_bom_component(component, bom)}
+        end,
       metadata: drop_empty(metadata)
     }
   end
