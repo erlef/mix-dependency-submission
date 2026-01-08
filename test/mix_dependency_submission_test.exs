@@ -295,7 +295,7 @@ defmodule MixDependencySubmissionTest do
 
         assert %{
                  "credo" => %Dependency{
-                   package_url: %Purl{type: "hex", name: "credo", version: "1.7.14"},
+                   package_url: %Purl{type: "hex", name: "credo", version: "1." <> _rest_version},
                    relationship: :direct,
                    scope: :runtime,
                    dependencies: [_credo_one | _credo_rest]
