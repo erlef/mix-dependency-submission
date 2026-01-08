@@ -15,7 +15,6 @@ updates:
     interval: "monthly"
   groups:
     github-actions:
-      applies-to: mix-updates
+      applies-to: version-updates
       patterns:
         - "*"
-  open-pull-requests-limit: 10
