@@ -29,44 +29,27 @@ jobs:
         with:
           egress-policy: audit
 
-      - name: Create prerelease
-        if: ${{ !inputs.stable }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: >-
-          gh release create
-          --repo ${{ github.repository }}
-          --title ${{ inputs.releaseName }}
-          --prerelease
-          --generate-notes
-          ${{ inputs.releaseName }}
-      - name: Create release
-        if: ${{ inputs.stable }}
-        env:
-          GITHUB_TOKEN: ${{ github.token }}
-        run: >-
-          gh release create
-          --repo ${{ github.repository }}
-          --title ${{ inputs.releaseName }}
-          --generate-notes
-          ${{ inputs.releaseName }}
-            
       - name: "Download Docs Artifact"
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: docs
           path: .
-      - name: "Download EScript Artifact"
+      - name: "Download Binary Artifact"
         uses: actions/download-artifact@37930b1c2abaa49bbe596cd826c3c89aef350131 # v7.0.0
         with:
           name: binary
           path: .
 
-      - name: Upload Artifacts
+      - name: Create release
         env:
           GITHUB_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          RELEASE_NAME: ${{ inputs.releaseName }}
         run: >-
-          gh release upload
-          --repo ${{ github.repository }}
-          --clobber "${{ inputs.releaseName }}"
+          gh release create
+          --repo "$REPO"
+          --title "$RELEASE_NAME"
+          --generate-notes
+          ${{ inputs.stable && '' || '--prerelease' }}
+          "$RELEASE_NAME"
           docs.tar.gz* mix_dependency_submission*
