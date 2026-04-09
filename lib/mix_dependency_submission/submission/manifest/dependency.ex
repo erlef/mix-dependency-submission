@@ -77,8 +77,14 @@ defmodule MixDependencySubmission.Submission.Manifest.Dependency do
 
   defp license_from_component(%CycloneDX.Component{licenses: licenses}) do
     licenses
-    |> Enum.map(fn %CycloneDX.LicenseChoice{choice: {:license, license}} -> license end)
-    |> Enum.map_join(" AND ", fn %CycloneDX.License{license: {:id, id}} -> id end)
+    |> Enum.map(fn
+      %CycloneDX.LicenseChoice{choice: {:license, license}} -> license
+      %CycloneDX.LicenseChoice{choice: {:expression, expression}} -> expression
+    end)
+    |> Enum.map_join(" AND ", fn
+      %CycloneDX.License{license: {:id, id}} -> id
+      expression when is_binary(expression) -> expression
+    end)
   end
 
   @spec purl(purl :: String.t()) :: Purl.t()

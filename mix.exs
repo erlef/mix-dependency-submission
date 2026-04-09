@@ -88,12 +88,11 @@ defmodule MixDependencySubmission.MixProject do
       {:ex_doc, ">= 0.0.0", only: [:dev], runtime: false},
       {:excoveralls, "~> 0.5", only: [:test], runtime: false},
       {:jason, "~> 1.4"},
-      {:optimus, "~> 0.5.1"},
+      {:optimus, "~> 0.6.0"},
       {:plug, "~> 1.0", only: [:test]},
       {:purl, "~> 0.3.0"},
       {:req, "~> 0.5.6"},
-      # TODO: Update to stable release when available
-      {:sbom, "~> 0.8.0-beta"},
+      {:sbom, "~> 0.10.0"},
       {:styler, "~> 1.1", only: [:dev, :test], runtime: false}
     ]
   end

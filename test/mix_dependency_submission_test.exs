@@ -136,7 +136,7 @@ defmodule MixDependencySubmissionTest do
                    version: "1.5.4",
                    qualifiers: %{
                      "checksum" => "sha256:f4e57237b17110f9ec55d332aa0c090e17137d2328d8a787350b1772ae64eb57",
-                     "download_url" => "https://getoban.pro/repo/tarballs/oban_pro-1.5.4.tar.gz",
+                     "download_url" => "https://getoban.pro/repo/tarballs/oban_pro-1.5.4.tar",
                      "repository_url" => "https://getoban.pro/repo"
                    }
                  }
@@ -202,7 +202,7 @@ defmodule MixDependencySubmissionTest do
                      version: "0.2.1",
                      qualifiers: %{
                        "checksum" => "sha256:a330bfb4245239787b15005e66ae6845c9cd524a288f0d141c148b02603777a5",
-                       "download_url" => "https://repo.hex.pm/tarballs/bunt-0.2.1.tar.gz"
+                       "download_url" => "https://repo.hex.pm/tarballs/bunt-0.2.1.tar"
                      }
                    },
                    %Purl{type: "hex", name: "file_system", version: "0.2.10"},
