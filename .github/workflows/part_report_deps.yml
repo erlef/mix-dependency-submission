@@ -28,12 +28,12 @@ jobs:
 
     steps:
       - name: Harden Runner
-        uses: step-security/harden-runner@a90bcbc6539c36a85cdfeb73f7e2f433735f215b # v2.15.0
+        uses: step-security/harden-runner@fe104658747b27e96e4f7e80cd0a94068e53901d # v2.16.1
         with:
           egress-policy: audit
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
 
-      - uses: actions/download-artifact@70fc10c6e5e1ce46ad2ea6f2b72d43f7d47b13c3 # v8.0.0
+      - uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: binary
           path: .
@@ -51,7 +51,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: "Validate Output submission-json-path not empty"
-        uses: nick-fields/assert-action@aa0067e01f0f6545c31755d6ca128c5a3a14f6bf # v2.0.0
+        uses: nick-fields/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
         with:
           expected: ""
           actual: "${{ steps.submit.outputs.submission-json-path }}"
@@ -75,14 +75,14 @@ jobs:
           SUBMISSION_JSON_PATH: "${{ steps.submit.outputs.submission-json-path }}"
 
       - name: "Validate output snapshot-id not empty"
-        uses: nick-fields/assert-action@aa0067e01f0f6545c31755d6ca128c5a3a14f6bf # v2.0.0
+        uses: nick-fields/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
         with:
           expected: ""
           actual: "${{ steps.submit.outputs.snapshot-id }}"
           comparison: "notEqual"
 
       - name: "Validate output snapshot-api-url is correct"
-        uses: nick-fields/assert-action@aa0067e01f0f6545c31755d6ca128c5a3a14f6bf # v2.0.0
+        uses: nick-fields/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
         with:
           expected: "${{ github.api_url }}/repos/${{ github.repository }}/dependency-graph/snapshots/${{ steps.submit.outputs.snapshot-id }}"
           actual: "${{ steps.submit.outputs.snapshot-api-url }}"
@@ -97,7 +97,7 @@ jobs:
           bearerToken: "${{ github.token }}"
 
       - name: "Snapshot API call status code is 200"
-        uses: nick-fields/assert-action@aa0067e01f0f6545c31755d6ca128c5a3a14f6bf # v2.0.0
+        uses: nick-fields/assert-action@22dd2a66ef733fe92022d3704183ac007463eecb # v3.0.0
         with:
           expected: "200"
           actual: "${{ steps.snapshot-api-call.outputs.status }}"
