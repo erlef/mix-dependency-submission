@@ -10,7 +10,7 @@ defmodule MixDependencySubmission.MixProject do
     [
       app: :mix_dependency_submission,
       version: @version,
-      elixir: "1.19.5",
+      elixir: "1.20.3",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       archives: archives(),
