@@ -10,7 +10,7 @@ defmodule MixDependencySubmission.MixProject do
     [
       app: :mix_dependency_submission,
       version: @version,
-      elixir: "1.20.4",
+      elixir: "~> 1.20",
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       archives: archives(),
@@ -90,9 +90,9 @@ defmodule MixDependencySubmission.MixProject do
       {:jason, "~> 1.4"},
       {:optimus, "~> 0.6.0"},
       {:plug, "~> 1.0", only: [:test]},
-      {:purl, "~> 0.3.0"},
+      {:purl, "~> 0.5.0"},
       {:req, "~> 0.7.4"},
-      {:sbom, "~> 0.10.0"},
+      {:sbom, "~> 0.11.0"},
       {:styler, "~> 1.1", only: [:dev, :test], runtime: false}
     ]
   end
