@@ -148,14 +148,14 @@ defmodule MixDependencySubmissionTest do
     test "empty submission for project without mix.exs", %{tmp_dir: tmp_dir} do
       Util.in_project(tmp_dir, fn _mix_module ->
         assert %Submission{manifests: manifests} =
-                 MixDependencySubmission.submission(%{
+                 MixDependencySubmission.submission(
                    github_job_id: "github_job_id",
                    github_workflow: "github_workflow",
                    sha: "sha",
                    ref: "ref",
                    project_path: tmp_dir,
                    paths_relative_to: tmp_dir
-                 })
+                 )
 
         assert manifests == %{}
       end)
