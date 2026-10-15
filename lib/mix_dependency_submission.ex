@@ -147,7 +147,9 @@ defmodule MixDependencySubmission do
         Mix.Task.run("deps.get")
       end
 
-      make_manifest(SBoM.CycloneDX.bom(), project_path, options[:paths_relative_to])
+      [vulnerabilities: false]
+      |> SBoM.CycloneDX.bom()
+      |> make_manifest(project_path, options[:paths_relative_to])
     end)
   end
 
