@@ -92,7 +92,7 @@ defmodule MixDependencySubmission.MixProject do
       {:plug, "~> 1.0", only: [:test]},
       {:purl, "~> 0.5.0"},
       {:req, "~> 0.7.4"},
-      {:sbom, "~> 0.11.0"},
+      {:sbom, "~> 0.12.0"},
       {:styler, "~> 1.1", only: [:dev, :test], runtime: false}
     ]
   end
